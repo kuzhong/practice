@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查找可行值</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        p, label {
+            font-size: 1em;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>查找可行值</h1>
+    <p>请输入范围和数值：</p>
+    <label for="start">起始值：</label>
+    <input type="number" id="start" placeholder="例如：3500000"><br><br>
+    <label for="end">结束值：</label>
+    <input type="number" id="end" placeholder="例如：3700000"><br><br>
+    <label for="a">值 a：</label>
+    <input type="number" id="a" placeholder="例如：84550"><br><br>
+    <label for="b">值 b：</label>
+    <input type="number" id="b" placeholder="例如：1727726"><br><br>
+    <label for="tolerance">容差：</label>
+    <input type="number" id="tolerance" step="0.01" placeholder="例如：0.01"><br><br>
+    <button onclick="findPossibleValues()">查找值</button>
+
+    <h2>结果：</h2>
+    <div id="results"></div>
+
+    <script>
+        function findPossibleValues() {
+            const start = parseInt(document.getElementById('start').value);
+            const end = parseInt(document.getElementById('end').value);
+            const a = parseInt(document.getElementById('a').value);
+            const b = parseInt(document.getElementById('b').value);
+            const tolerance = parseFloat(document.getElementById('tolerance').value);
+            const results = [];
+
+            if (isNaN(start) || isNaN(end) || isNaN(a) || isNaN(b) || isNaN(tolerance) || start <= 0 || end <= 0 || a <= 0 || b <= 0 || tolerance <= 0) {
+                alert("请输入有效的正数值。");
+                return;
+            }
+
+            for (let x = start; x <= end; x++) {
+                const p = (a * 100) / x;
+                const q = (b * 100) / x;
+                const pError = Math.abs(p - Math.round(p));
+                const qError = Math.abs(q - Math.round(q));
+
+                if (pError < tolerance && qError < tolerance) {
+                    results.push(`x: ${x}, p%: ${Math.round(p)}, q%: ${Math.round(q)}`);
+                }
+            }
+
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = results.length ? results.join('<br>') : '在给定范围内没有找到合适的值。';
+        }
+    </script>
+</body>
+</html>
